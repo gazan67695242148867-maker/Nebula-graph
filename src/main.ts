@@ -18,7 +18,7 @@ export default class NebulaGraphPlugin extends Plugin {
 	}
 
 	onunload(): void {
-		// Views are detached by Obsidian and release their own resources in onClose.
+		// Intentionally empty: GraphView releases its scene in onClose (via GraphScene.dispose).
 	}
 
 	private async openGraphView(): Promise<void> {

@@ -4,6 +4,6 @@
 	"version": "0.1.0",
 	"minAppVersion": "1.7.2",
 	"description": "Explore your vault as a 3D lattice of luminous notes and links.",
-	"author": "",
+	"author": "Gavrilov Dima",
 	"isDesktopOnly": true
 }

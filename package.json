@@ -16,7 +16,8 @@
 		"harness": "node scripts/build-harness.mjs"
 	},
 	"keywords": [],
-	"license": "UNLICENSED",
+	"author": "Gavrilov Dima",
+	"license": "MIT",
 	"dependencies": {
 		"three": "^0.187.0"
 	},

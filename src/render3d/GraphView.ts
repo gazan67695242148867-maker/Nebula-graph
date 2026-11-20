@@ -13,6 +13,8 @@ export class GraphView extends ItemView {
 
 	constructor(leaf: WorkspaceLeaf) {
 		super(leaf);
+		// Safety net: releases the scene on unload too. dispose() is idempotent, so a second call is harmless.
+		this.register(() => this.releaseScene());
 	}
 
 	getViewType(): string {
@@ -38,8 +40,13 @@ export class GraphView extends ItemView {
 	}
 
 	async onClose(): Promise<void> {
+		this.releaseScene();
+		this.contentEl.empty();
+	}
+
+	/** Dispose the scene, including its ResizeObserver and WebGL context. Safe to call repeatedly. */
+	private releaseScene(): void {
 		this.scene?.dispose();
 		this.scene = null;
-		this.contentEl.empty();
 	}
 }
