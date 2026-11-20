@@ -8,12 +8,13 @@
 	"scripts": {
 		"dev": "node esbuild.config.mjs",
 		"build": "tsc -noEmit -skipLibCheck && node esbuild.config.mjs production",
-		"version": "node version-bump.mjs && git add manifest.json versions.json",
+		"version": "node scripts/bump.mjs",
 		"lint": "eslint .",
 		"test": "vitest run",
 		"generate": "tsx scripts/generate-vault.ts",
 		"dev-vault:link": "node scripts/link-dev-vault.mjs",
-		"harness": "node scripts/build-harness.mjs"
+		"harness": "node scripts/build-harness.mjs",
+		"check-version": "node scripts/check-version.mjs"
 	},
 	"keywords": [],
 	"author": "Gavrilov Dima",

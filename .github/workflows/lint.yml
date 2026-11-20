@@ -1,4 +1,4 @@
-name: Node.js build
+name: Build, test and lint
 
 on:
     push:
@@ -16,12 +16,14 @@ jobs:
                 # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
         steps:
-            - uses: actions/checkout@v6
+            - uses: actions/checkout@v4
             - name: Use Node.js ${{ matrix.node-version }}
-              uses: actions/setup-node@v6
+              uses: actions/setup-node@v4
               with:
                   node-version: ${{ matrix.node-version }}
                   cache: 'npm'
             - run: npm ci
-            - run: npm run build --if-present
+            - run: npm run check-version
+            - run: npm run build
+            - run: npm test
             - run: npm run lint
