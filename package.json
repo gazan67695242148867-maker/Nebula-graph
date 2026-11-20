@@ -1,0 +1,37 @@
+{
+	"name": "nebula-graph",
+	"version": "0.1.0",
+	"private": true,
+	"description": "Obsidian plugin: 3D Aurora Lattice graph view built on three.js and WebGL2.",
+	"main": "main.js",
+	"type": "module",
+	"scripts": {
+		"dev": "node esbuild.config.mjs",
+		"build": "tsc -noEmit -skipLibCheck && node esbuild.config.mjs production",
+		"version": "node version-bump.mjs && git add manifest.json versions.json",
+		"lint": "eslint .",
+		"test": "vitest run",
+		"generate": "tsx scripts/generate-vault.ts",
+		"dev-vault:link": "node scripts/link-dev-vault.mjs"
+	},
+	"keywords": [],
+	"license": "UNLICENSED",
+	"dependencies": {
+		"three": "^0.187.0"
+	},
+	"devDependencies": {
+		"@eslint/js": "^9.39.4",
+		"@types/node": "^22.15.17",
+		"@types/three": "^0.187.0",
+		"esbuild": "0.25.5",
+		"eslint": "^9.39.4",
+		"eslint-plugin-obsidianmd": "^0.4.0",
+		"globals": "^17.6.0",
+		"jiti": "^2.6.1",
+		"obsidian": "^1.14.4",
+		"tsx": "^4.23.15",
+		"typescript": "^5.8.3",
+		"typescript-eslint": "^8.59.1",
+		"vitest": "^3.2.4"
+	}
+}

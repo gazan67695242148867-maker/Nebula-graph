@@ -1,0 +1,9 @@
+{
+	"id": "nebula-graph",
+	"name": "Nebula Graph",
+	"version": "0.1.0",
+	"minAppVersion": "1.4.0",
+	"description": "Explore your vault as a 3D lattice of luminous notes and links.",
+	"author": "",
+	"isDesktopOnly": true
+}
