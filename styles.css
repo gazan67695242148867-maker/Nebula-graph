@@ -2,3 +2,22 @@
  * Styles for Nebula Graph. Included with the plugin and active while it is enabled.
  * Frosted-glass panel styles arrive with the UI milestones.
  */
+
+.nebula-graph-view {
+	position: relative;
+	height: 100%;
+	overflow: hidden;
+}
+
+.nebula-graph-host {
+	position: absolute;
+	inset: 0;
+}
+
+/* The renderer sizes its drawing buffer itself; the canvas just fills the host. */
+.nebula-graph-canvas {
+	display: block;
+	width: 100%;
+	height: 100%;
+	outline: none;
+}

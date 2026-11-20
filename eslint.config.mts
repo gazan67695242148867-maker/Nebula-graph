@@ -15,6 +15,7 @@ export default defineConfig(
 		'tsconfig.json',
 		'dev-vault',
 		'coverage',
+		'harness-dist',
 	]),
 	{
 		languageOptions: {
@@ -23,7 +24,7 @@ export default defineConfig(
 			},
 			parserOptions: {
 				projectService: {
-					allowDefaultProject: ['eslint.config.mts', 'manifest.json', 'scripts/link-dev-vault.mjs', 'vitest.config.mts'],
+					allowDefaultProject: ['eslint.config.mts', 'manifest.json', 'scripts/link-dev-vault.mjs', 'scripts/build-harness.mjs', 'vitest.config.mts'],
 				},
 				tsconfigRootDir: import.meta.dirname,
 				extraFileExtensions: ['.json'],
@@ -37,6 +38,8 @@ export default defineConfig(
 		rules: {
 			'obsidianmd/rule-custom-message': 'off',
 			'obsidianmd/hardcoded-config-path': 'off',
+			'obsidianmd/prefer-create-el': 'off',
+			'obsidianmd/no-static-styles-assignment': 'off',
 		},
 	},
 );

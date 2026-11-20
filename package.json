@@ -12,7 +12,8 @@
 		"lint": "eslint .",
 		"test": "vitest run",
 		"generate": "tsx scripts/generate-vault.ts",
-		"dev-vault:link": "node scripts/link-dev-vault.mjs"
+		"dev-vault:link": "node scripts/link-dev-vault.mjs",
+		"harness": "node scripts/build-harness.mjs"
 	},
 	"keywords": [],
 	"license": "UNLICENSED",

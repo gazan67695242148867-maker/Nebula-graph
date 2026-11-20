@@ -25,3 +25,6 @@ data.json
 dev-vault/
 *.docx.tmp
 coverage/
+
+# browser harness output
+harness-dist/
