@@ -8,7 +8,9 @@ import { boundingSphere, fibonacciSphere } from "./layout";
 import { buildNodeMesh } from "./nodes";
 import { paletteFor, type Palette } from "./palette";
 import { clusterColor } from "./style";
+import { buildStars } from "./stars";
 
+const STAR_COUNT = 1500;
 const FOV = 50;
 const NEAR = 0.1;
 const FAR = 4000;
@@ -38,23 +40,34 @@ export class GraphScene {
 	private readonly resizeObserver: ResizeObserver;
 	private readonly palette: Palette;
 	private readonly background: THREE.Mesh;
+	/** The window that owns the host element. May differ from the main window in a popout. */
+	private readonly win: Window;
+	private stars: THREE.Points | null = null;
 
 	private nodeMesh: THREE.InstancedMesh | null = null;
 	private edgeLines: EdgeLines | null = null;
 	private edgeGroup: THREE.Group | null = null;
 	private frameRequested = false;
+	private contextLost = false;
 	private disposed = false;
 
 	constructor(private readonly host: HTMLElement, options: GraphSceneOptions) {
+		this.win = host.ownerDocument.defaultView ?? window;
 		this.palette = paletteFor(options.light);
 
 		this.renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance" });
 		this.renderer.setClearColor(this.palette.bottom);
 		this.renderer.domElement.className = "nebula-graph-canvas";
+		this.renderer.domElement.addEventListener("webglcontextlost", this.onContextLost);
+		this.renderer.domElement.addEventListener("webglcontextrestored", this.onContextRestored);
 		host.appendChild(this.renderer.domElement);
 
 		this.background = buildBackground(this.palette);
 		this.scene.add(this.background);
+		if (this.palette.stars) {
+			this.stars = buildStars(STAR_COUNT);
+			this.scene.add(this.stars);
+		}
 		this.scene.fog = new THREE.FogExp2(this.palette.fog, FOG_DENSITY);
 		this.scene.add(new THREE.AmbientLight(0xffffff, 0.55));
 		const key = new THREE.DirectionalLight(0xffffff, 1.0);
@@ -118,13 +131,29 @@ export class GraphScene {
 		this.disposed = true;
 		this.resizeObserver.disconnect();
 		this.controls.removeEventListener("change", this.requestFrame);
+		this.renderer.domElement.removeEventListener("webglcontextlost", this.onContextLost);
+		this.renderer.domElement.removeEventListener("webglcontextrestored", this.onContextRestored);
 		this.controls.dispose();
 		this.clearContent();
 		disposeTree(this.background);
+		if (this.stars) disposeTree(this.stars);
+		this.stars = null;
 		this.renderer.dispose();
 		this.renderer.forceContextLoss();
 		this.renderer.domElement.remove();
 	}
+
+	/** Stop drawing while the GPU context is gone. three.js restores its own GPU state on restore. */
+	private readonly onContextLost = (event: Event): void => {
+		event.preventDefault();
+		this.contextLost = true;
+	};
+
+	private readonly onContextRestored = (): void => {
+		this.contextLost = false;
+		this.resize();
+		this.requestFrame();
+	};
 
 	private clearContent(): void {
 		if (this.nodeMesh) disposeTree(this.nodeMesh);
@@ -137,12 +166,12 @@ export class GraphScene {
 	private readonly requestFrame = (): void => {
 		if (this.frameRequested || this.disposed) return;
 		this.frameRequested = true;
-		window.requestAnimationFrame(this.tick);
+		this.win.requestAnimationFrame(this.tick);
 	};
 
 	private readonly tick = (): void => {
 		this.frameRequested = false;
-		if (this.disposed) return;
+		if (this.disposed || this.contextLost) return;
 		const moving = this.controls.update();
 		this.renderer.render(this.scene, this.camera);
 		if (moving) this.requestFrame();
@@ -153,7 +182,7 @@ export class GraphScene {
 		const height = this.host.clientHeight;
 		if (width === 0 || height === 0 || this.disposed) return;
 
-		const pixelRatio = Math.min(window.devicePixelRatio, MAX_PIXEL_RATIO);
+		const pixelRatio = Math.min(this.win.devicePixelRatio, MAX_PIXEL_RATIO);
 		this.renderer.setPixelRatio(pixelRatio);
 		// false: the canvas CSS size comes from the stylesheet, so the element keeps tracking its container.
 		this.renderer.setSize(width, height, false);
