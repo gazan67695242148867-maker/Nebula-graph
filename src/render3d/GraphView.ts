@@ -34,7 +34,8 @@ export class GraphView extends ItemView {
 		this.contentEl.addClass("nebula-graph-view");
 		const host = this.contentEl.createDiv({ cls: "nebula-graph-host" });
 
-		const light = document.body.classList.contains("theme-light");
+		// Read the theme from the window that hosts this view, so popout windows get the right palette.
+		const light = this.contentEl.ownerDocument.body.classList.contains("theme-light");
 		this.scene = new GraphScene(host, { light });
 		this.scene.setData(buildGraphFromApp(this.app));
 	}
